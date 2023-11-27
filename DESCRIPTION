@@ -1,0 +1,17 @@
+Package: Qstat
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 1.0
+Author: JACK LI/YUE WU/ZHUOYU WANG
+Maintainer: Jack Li <lijack@umich.edu> 
+Description: This package provides an implementation of a locus-based test 
+    for assessing whether two samples are drawn from the same population. It 
+    includes functions for calculating test statistics, visualizing data, and 
+    interpreting results. The methods are based on advanced statistical models 
+    that account for various factors in population genetics.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+Imports: 
+    stats
