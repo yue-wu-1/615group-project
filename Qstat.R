@@ -46,8 +46,10 @@ Qstat <- function(center = NULL, bx, by, se_bx, se_by, R,
       by <- by[-ix]
     }
   }
-  if (length(by) == 0) {
-    print("You've removed everything!")
+
+  #we can only use the score statistic if there are at least two variants - otherwise, return NA.
+  if (length(by) <= 1) {
+    print("Not enough variants remain!")
     return(list(Qstat = NA, pval = NA, df = NA))
   }
 
