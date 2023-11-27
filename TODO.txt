@@ -1,0 +1,17 @@
+A list of things to do to polish the package:
+
+SMALL FUNCTION CHANGES
+  1. Add a warning message if the Q-statistic is less than 0
+  2. After performing SVD, print out the smallest singular value, and print a message if the SVD threshold is below that
+
+NEW FUNCTIONS
+  1. Add a matrix cleaning function
+    a. removing perfectly correlated SNPs
+    b. diagnosing if a matrix is not SPD using eigen()
+    c. fixing a non-SPD matrix if desired (nearPD from Matrix)
+  2. Add a function for simulating GWAS summary statistics based on an LD matrix (requires mvrnorm)
+
+PACKAGE COMPONENTS
+  1. Add sample LD matrices
+  2. Add a tutorial that explains in detail how to run a result.
+  3. Clean up and fix documentation
