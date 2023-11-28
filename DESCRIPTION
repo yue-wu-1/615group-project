@@ -1,17 +1,11 @@
-Package: Qstat
+Package: Qlocalstat
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A Score Statistic for Assessing the Same-Population Assumption
 Version: 1.0
-Author: JACK LI/YUE WU/ZHUOYU WANG
-Maintainer: Jack Li <lijack@umich.edu> 
-Description: This package provides an implementation of a locus-based test 
-    for assessing whether two samples are drawn from the same population. It 
-    includes functions for calculating test statistics, visualizing data, and 
-    interpreting results. The methods are based on advanced statistical models 
-    that account for various factors in population genetics.
+Date: 2023-11-28
+Author: Jack Li, Yue Wu, Zhuoyu Wang
+Maintainer: Jack Li <lijack@umich.edu>
+Description: Calculates a score statistic to test the same-population assumption in two-sample MR in a locus of variants based on GWAS summary statistics - with extra options to handle potential numerical instability in matrix inversion.
 License: GPL (>= 3)
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.2.3
-Imports: 
-    stats
+RoxygenNote: 7.2.0
