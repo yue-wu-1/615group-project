@@ -1,57 +1,25 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
-
-# Qstat
-guide
+# Qlocalstat - A Package for Assessing the Same Population Assumption in Two-Sample MR using Linkage Disequilibrium Data
 
 ```{r}
-library(Qstat)
+library(Qlocalstat)
 ```
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of Qstat is to ...
+Qlocalstat is a score-statistic based method that takes GWAS summary statistics (estimate and standard error) for two traits (exposure, x and outcome, y) and an LD matrix for the exposure for a set of nearby variants (locus), then calculates a score statistic that determines if the heterogeneity of summary statistics in the locus is higher than expected (which is reflective of population mismatch). 
 
 ## Installation
 
-You can install the development version of Qstat like so:
+You can install Qlocalstat from Github via:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("yue-wu-1/615group-project")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+or by downloading the tarball in the repository via:
 
 ```{r example}
-library(Qstat)
-setwd("..")
-install.packages("Qstat_1.0.tar.gz",repos = NULL)
-## basic example code
+install.packages("Qlocalstat_1.0.tar.gz",repos = NULL)
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
