@@ -5,5 +5,4 @@ NEW FUNCTIONS
   2. Add a function for simulating GWAS summary statistics based on an LD matrix (requires mvrnorm)
 
 PACKAGE COMPONENTS
-  1. Add sample LD matrices
-  2. Adding a tutorial (or function script) that explains in detail how to run a result.
+  1. A code file that shows a test run across all 3 trials.
