@@ -18,7 +18,7 @@
 #' @examples   R <- matrix(c(1, 0.964356, 0.964356, 1), nrow = 2, ncol = 2)
 #' bx <- c(0.4724217, 0.4681516)
 #' by <- c(0.1840862, 0.1632529)
-#' 
+#'
 #' Qstat(center = "mean", bx = bx, by = by,
 #'       se_bx = rep(0.05, 2), se_by = rep(0.05,2), R = R,
 #'       weak_filter = TRUE, weak_thresh = 2,
@@ -39,7 +39,7 @@ Qstat <- function(center = NULL, bx, by, se_bx, se_by, R,
     bx <- bx[-ix]
     by <- by[-ix]
   }
-  
+
   ##filtering out weak instruments below a certain squared z-score threshold
   if (weak_filter) {
     absZ <- abs(bx/se_bx)
@@ -53,13 +53,13 @@ Qstat <- function(center = NULL, bx, by, se_bx, se_by, R,
       by <- by[-ix]
     }
   }
-  
+
   if (length(by) <= 1) {
     print("Not enough variants remain!")
     return(list(Qstat = NA, pval = NA, df = NA))
   }
-  
-  
+
+
   ##The Q-statistic depends on the choice of center
   #while the user can specify this, we will also give them three simple choices: "index", "mean", "median"
   if (center == "index") { #picking the most significant SNP as the representative
@@ -67,28 +67,28 @@ Qstat <- function(center = NULL, bx, by, se_bx, se_by, R,
     ind_var <- which.max(absZ) #the index variant
     center <- by[ind_var]/bx[ind_var]
   }
-  
+
   if (center == "mean") { ##the mean of the ratios
     center <- mean(ratios)
   }
-  
+
   if (center == "median") { ##the median of the ratios
     center <- median(ratios)
   }
-  
-  
+
+
   #Calculating Omega, and applying Tikhonov regularization if desired.
   #Beware of over-applying regularization: if the threshold is set too high, your results will be biased!
   Omega <- diag(se_bx) %*% R %*% diag(se_bx) + 1/center^2*diag(se_by) %*% R %*% diag(se_by)
   Omega <- Omega + reg*diag(dim(Omega)[1])
-  
+
   if (SVD) {
     #using SVD to approximate the matrix inverse to get rid of the singular values below a certain threshold
     svdO <- svd(Omega)
     if (is.na(SVD_thresh)) {
       stop("filtering threshold needed for inverse approximation by SVD!")
     }
-    
+
     if (is.numeric(SVD_thresh)) {
       if (min(svdO$d) > SVD_thresh) {
         message(paste("NOTE: All singular values are above the selected threshold of", SVD_thresh))
@@ -101,7 +101,7 @@ Qstat <- function(center = NULL, bx, by, se_bx, se_by, R,
       pval <- pchisq(Qstat, df = length(bx) - 1, lower.tail = FALSE)
       return(list(Qstat = Qstat, pval = pval, df = length(bx) - 1))
     }
-    
+
     if (SVD_thresh == "eigen") {
       #removing singular values that have a negative eigenvalue
       invOmega <- eigen.pinv(Omega)
@@ -127,13 +127,13 @@ PDcheck <- function(R, se_bx, se_by, center) {
   #then recommends a course of action for the pseudoinverse based on this.
   Omega <- diag(se_bx) %*% R %*% diag(se_bx) + 1/center^2*diag(se_by) %*% R %*% diag(se_by)
   eigenO <- eigen(Omega)
-  
+
   if (any(eigenO$values < 0)) {
     message(cat("This matrix is not positive definite - negative eigenvalue indices include",
                 which(eigenO$values < 0),
                 "with eigenvalues",
                 eigenO$values[which(eigenO$values < 0)], sep = " "))
-    
+
     if (max(abs(eigenO$values[which(eigenO$values < 0)])) < min(eigenO$values[which(eigenO$values > 0)])) {
       #this is an easy case where the negative eigenvalues are also the smallest singular values.
       message(cat("We recommend using the pseudoinverse, with a SVD threshold of above",
@@ -146,7 +146,7 @@ PDcheck <- function(R, se_bx, se_by, center) {
       #in this case, we can either just ignore the lack of perfect separation, or perform an eigenvalue based removal
       message(cat("Negative eigenvalues are not also the smallest singular values:",
                   "You can either use a SVD threshold of",
-                  max(abs(eigenO$values[which(eigenO$values < 0)])), 
+                  max(abs(eigenO$values[which(eigenO$values < 0)])),
                   "or use the 'eigen' argument for SVD_thresh", sep = " "))
     }
     return(max(abs(eigenO$values[which(eigenO$values < 0)])))
@@ -161,7 +161,7 @@ eigen.pinv <- function(Omega) {
   #an eigenvalue based pseudoinverse
   eigenO <- eigen(Omega)
   svdO <- svd(Omega)
-  
+
   if (any(eigenO$values < 0)) {
     neg_eigen <- eigenO$values[eigenO$values < 0]
     dinv <- vector()
@@ -176,4 +176,29 @@ eigen.pinv <- function(Omega) {
     dinv <- 1/svdO$d
   }
   return(svdO$v %*% diag(dinv) %*% t(svdO$u))
+}
+
+#' @export
+matrix_thin <- function(matrix, R2 = 0.99999, verbose = FALSE) {
+  n <- dim(matrix)[1]
+  rm_index <- vector()
+  for (i in 1:(n - 1)) {
+    lds <- matrix[i, (i+1):n]^2
+    redundant <- which(lds > R2) + i
+    rm_index <- c(rm_index, redundant)
+    rm_index <- unique(rm_index)
+  }
+
+  if (length(rm_index) >= 1) {
+    if (verbose) {message(paste("Removed entries", rm_index))}
+  } else {
+    if (verbose){message("No variants removed by thinning!")}
+  }
+
+  matrix_thinned <- matrix[-rm_index, -rm_index]
+  if (length(matrix_thinned) == 1) {
+    warning("All but one variant removed - the score statistic needs at least two variants.")
+  }
+
+  return(matrix_thinned)
 }
