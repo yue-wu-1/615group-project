@@ -16,6 +16,7 @@ You can install Qlocalstat from Github via:
 
 ``` r
 devtools::install_github("yue-wu-1/615group-project")
+library(Qlocalstat)
 ```
 
 or by downloading the tarball in the repository and installing in R using the command:
